@@ -674,14 +674,36 @@
     <script>
       lucide.createIcons();
 
-      // Animation on load - staggered
+      // Animation on load for navbar and hero only (optional)
       window.addEventListener("DOMContentLoaded", () => {
-        const animated = document.querySelectorAll("[data-animate]");
-        animated.forEach((el, i) => {
-          setTimeout(() => {
-            el.classList.add("visible");
-          }, 120 * i);
-        });
+        const nav = document.querySelector("nav[data-animate]");
+        const hero = document.querySelector("main [data-animate]");
+        if (nav) nav.classList.add("visible");
+        if (hero) setTimeout(() => hero.classList.add("visible"), 120);
+      });
+
+      // Scroll-triggered animation for all sections
+      window.addEventListener("DOMContentLoaded", () => {
+        const observer = new window.IntersectionObserver(
+          (entries, obs) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+                obs.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            threshold: 0.15,
+          }
+        );
+        document
+          .querySelectorAll(
+            "section[data-animate], .flex.justify-center[data-animate], footer[data-animate]"
+          )
+          .forEach((el) => {
+            observer.observe(el);
+          });
       });
 
       // Mobile nav
